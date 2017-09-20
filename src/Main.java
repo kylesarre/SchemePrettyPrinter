@@ -17,8 +17,27 @@ public class Main {
     };
 
     public static void main (String argv[]) {
+    	
+    Scanner scanner;
 	// create scanner that reads from standard input
-	Scanner scanner = new Scanner(System.in);
+    if(argv.length == 2 && argv[1] != null) {
+    	// test file is specified
+    	File f = new File(argv[1]);
+    	FileInputStream fs = null;
+    	try {
+			fs = new FileInputStream(f);
+			scanner = new Scanner(fs);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Failed to load file from command line. Opening scanner with System.in stream.");
+			scanner = new Scanner(System.in);
+			e.printStackTrace();
+		}
+    }
+    else {
+    	// no test file was specified
+    	scanner = new Scanner(System.in);
+    }
 
 	if (argv.length > 2) {
 	    System.err.println("Usage: java Main " + "[-d]");
@@ -26,7 +45,8 @@ public class Main {
 	}
 	
 	// if commandline option -d is provided, debug the scanner
-	if (argv.length == 1 && argv[0].equals("-d")) {
+	if (argv.length >= 1 && argv[0].equals("-d")) {
+		System.out.println("Entering debug scanner mode.");
 	    // debug scanner
 	    Token tok = scanner.getNextToken();
 	    while (tok != null) {
