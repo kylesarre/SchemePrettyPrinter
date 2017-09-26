@@ -77,8 +77,25 @@ class Scanner {
 
     // String constants
     else if (ch == '"') {
-      // TODO: scan a string into the buffer variable buf
-      return new StrToken(buf.toString());
+      int length = 0;
+      try {
+      ch = (char)in.read();}
+      catch(Exception e) {
+    	  e.printStackTrace();
+    	  return null;
+      }
+      // store each char read from the input stream until we encounter another " char.
+      while(ch != '"') {
+    	  buf[length] = (byte)ch;
+    	  length++;    	  
+      }
+      char[] stringConstant = new char[length];
+      // write the data over to a char array and return the string literal token using that char array
+      while(length > 0) {
+    	  stringConstant[length-1] = (char)buf[length-1];
+    	  length--;
+      }
+      return new StrToken(stringConstant.toString());
     }
     // Negative integer constants
     else if(ch == '-') {
