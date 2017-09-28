@@ -48,7 +48,14 @@ public class Main {
 	if (argv.length >= 1 && argv[0].equals("-d")) {
 		System.out.println("Entering debug scanner mode.");
 	    // debug scanner
-	    Token tok = scanner.getNextToken();
+		Token tok = null;
+		try {
+			tok = scanner.getNextToken();
+		}
+		catch(Exception e) {
+			e.getMessage();
+			e.printStackTrace();
+		}
 	    while (tok != null) {
 		int tt = tok.getType();
 		System.out.print(TokenName[tt]);
@@ -61,7 +68,14 @@ public class Main {
 		else
 		    System.out.println();
 
-		tok = scanner.getNextToken();
+		try {
+			tok = scanner.getNextToken();
+		}
+		catch(Exception e) {
+			e.getMessage();
+			e.printStackTrace();
+			tok = null;
+		}
 	    }
 	}
 	

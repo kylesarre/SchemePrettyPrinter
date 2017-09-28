@@ -1,6 +1,7 @@
 // Scanner.java -- the implementation of class Scanner
 
 import java.io.*;
+import Exceptions.IllegalTokenException;
 
 class Scanner {
   private PushbackInputStream in;
@@ -8,7 +9,7 @@ class Scanner {
 
   public Scanner(InputStream i) { in = new PushbackInputStream(i); }
     
-  public Token getNextToken() {
+  public Token getNextToken() throws IllegalTokenException {
     int bite = -1;
 	
     // It would be more efficient if we'd maintain our own input buffer
@@ -79,14 +80,37 @@ class Scanner {
     else if (ch == '"') {
       int length = 0;
       try {
-      ch = (char)in.read();}
+      bite = in.read();}
       catch(Exception e) {
     	  e.printStackTrace();
     	  return null;
       }
-      // store each char read from the input stream until we encounter another " char.
+      //make sure the next char we read isn't EOF. If it is, we have a language error
+      if(bite != -1) {
+    	  ch = (char)bite;
+      }
+      else {
+    	  throw new Exceptions.IllegalTokenException("Lexing error: expected a string literal but encountered EOF.");  
+      }
+      // Next char seems to be a non EOF char. store each char read from the input stream until we encounter another '"' char or hit EOF.
       while(ch != '"') {
+    	  System.out.println(ch + " " + (ch != '"'));
+    	  
     	  buf[length] = (byte)ch;
+    	  try {
+    	      bite = in.read();}
+    	      catch(Exception e) {
+    	    	  e.printStackTrace();
+    	    	  return null;
+    	      }
+    	  if(bite != -1) {
+    		  ch = (char)bite;
+    		  
+    	  }
+    	  else {
+    		  // EOF reached before we encountered another '"'. This is a clear language error.
+    		  throw new Exceptions.IllegalTokenException("Lexing error: expected a string literal but encountered EOF.");
+    	  }
     	  length++;    	  
       }
       char[] stringConstant = new char[length];
@@ -95,7 +119,7 @@ class Scanner {
     	  stringConstant[length-1] = (char)buf[length-1];
     	  length--;
       }
-      return new StrToken(stringConstant.toString());
+      return new StrToken(new String(stringConstant));
     }
     // Negative integer constants
     else if(ch == '-') {
