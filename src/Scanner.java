@@ -94,8 +94,6 @@ class Scanner {
       }
       // Next char seems to be a non EOF char. store each char read from the input stream until we encounter another '"' char or hit EOF.
       while(ch != '"') {
-    	  System.out.println(ch + " " + (ch != '"'));
-    	  
     	  buf[length] = (byte)ch;
     	  try {
     	      bite = in.read();}
@@ -123,6 +121,7 @@ class Scanner {
     }
     // Negative integer constants
     else if(ch == '-') {
+    	char temp = ch;
     	int sign = -1;
     	try {
     	ch = (char)in.read();
@@ -134,6 +133,10 @@ class Scanner {
     	if(ch >= '0' && ch <= '9') {
     		int i = lexInt(ch)*sign;
     		return new IntToken(i);
+    	}
+    	// this is actually the - identifier
+    	else if(String.valueOf(ch).matches("\\s")) {
+    		return new IdentToken(String.valueOf(temp));
     	}
     	else {
     		// Not sure if we should handle the case of the '-' char followed by a non-integer char in such a way way...
@@ -158,13 +161,35 @@ class Scanner {
 		
 
     // Identifiers
-    else if (ch >= 'A' && ch <= 'Z'
-	     /* or ch is some other valid first character for an identifier */) {
+    else if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <='z'))
+	     /* or ch is some other valid first character for an identifier */ {
       // TODO: scan an identifier into the buffer
+    	//for now just allowing a sequence of alphanumerical characters starting with an alphabetical character
+    	int length = 0;
+    	while((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <='z') || (ch >= '0' && ch <='9')) {
+    		buf[length] = (byte)ch;
+    		length++;
+    		try {
+    			ch = (char)in.read();
+    		}
+    		catch(IOException e) {
+    			e.getMessage();
+    			e.printStackTrace();
+    		}
+    	}
+    	try {
+    	in.unread((byte)ch);}
+    	catch(IOException e) {
+    		e.printStackTrace();
+    	}
+    	char[] ident = new char[buf.length];
+    	for(int i = 0; i < length; i++) {
+    		ident[i] = (char)buf[i];
+    	}
 
       // put the character after the identifier back into the input
       // in->putback(ch);
-      return new IdentToken(buf.toString());
+      return new IdentToken(new String(ident));
     }
 
     // Illegal character
