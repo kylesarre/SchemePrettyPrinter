@@ -1,6 +1,7 @@
 // Scanner.java -- the implementation of class Scanner
 
 import java.io.*;
+import Exceptions.IllegalTokenException;
 
 class Scanner {
   private PushbackInputStream in;
@@ -8,7 +9,7 @@ class Scanner {
 
   public Scanner(InputStream i) { in = new PushbackInputStream(i); }
     
-  public Token getNextToken() {
+  public Token getNextToken() throws IllegalTokenException {
     int bite = -1;
 	
     // It would be more efficient if we'd maintain our own input buffer
@@ -77,11 +78,50 @@ class Scanner {
 
     // String constants
     else if (ch == '"') {
-      // TODO: scan a string into the buffer variable buf
-      return new StrToken(buf.toString());
+      int length = 0;
+      try {
+      bite = in.read();}
+      catch(Exception e) {
+    	  e.printStackTrace();
+    	  return null;
+      }
+      //make sure the next char we read isn't EOF. If it is, we have a language error
+      if(bite != -1) {
+    	  ch = (char)bite;
+      }
+      else {
+    	  throw new Exceptions.IllegalTokenException("Lexing error: expected a string literal but encountered EOF.");  
+      }
+      // Next char seems to be a non EOF char. store each char read from the input stream until we encounter another '"' char or hit EOF.
+      while(ch != '"') {
+    	  buf[length] = (byte)ch;
+    	  try {
+    	      bite = in.read();}
+    	      catch(Exception e) {
+    	    	  e.printStackTrace();
+    	    	  return null;
+    	      }
+    	  if(bite != -1) {
+    		  ch = (char)bite;
+    		  
+    	  }
+    	  else {
+    		  // EOF reached before we encountered another '"'. This is a clear language error.
+    		  throw new Exceptions.IllegalTokenException("Lexing error: expected a string literal but encountered EOF.");
+    	  }
+    	  length++;    	  
+      }
+      char[] stringConstant = new char[length];
+      // write the data over to a char array and return the string literal token using that char array
+      while(length > 0) {
+    	  stringConstant[length-1] = (char)buf[length-1];
+    	  length--;
+      }
+      return new StrToken(new String(stringConstant));
     }
     // Negative integer constants
     else if(ch == '-') {
+    	char temp = ch;
     	int sign = -1;
     	try {
     	ch = (char)in.read();
@@ -93,6 +133,10 @@ class Scanner {
     	if(ch >= '0' && ch <= '9') {
     		int i = lexInt(ch)*sign;
     		return new IntToken(i);
+    	}
+    	// this is actually the - identifier
+    	else if(String.valueOf(ch).matches("\\s")) {
+    		return new IdentToken(String.valueOf(temp));
     	}
     	else {
     		// Not sure if we should handle the case of the '-' char followed by a non-integer char in such a way way...
@@ -117,13 +161,35 @@ class Scanner {
 		
 
     // Identifiers
-    else if (ch >= 'A' && ch <= 'Z'
-	     /* or ch is some other valid first character for an identifier */) {
+    else if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <='z'))
+	     /* or ch is some other valid first character for an identifier */ {
       // TODO: scan an identifier into the buffer
+    	//for now just allowing a sequence of alphanumerical characters starting with an alphabetical character
+    	int length = 0;
+    	while((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <='z') || (ch >= '0' && ch <='9')) {
+    		buf[length] = (byte)ch;
+    		length++;
+    		try {
+    			ch = (char)in.read();
+    		}
+    		catch(IOException e) {
+    			e.getMessage();
+    			e.printStackTrace();
+    		}
+    	}
+    	try {
+    	in.unread((byte)ch);}
+    	catch(IOException e) {
+    		e.printStackTrace();
+    	}
+    	char[] ident = new char[buf.length];
+    	for(int i = 0; i < length; i++) {
+    		ident[i] = (char)buf[i];
+    	}
 
       // put the character after the identifier back into the input
       // in->putback(ch);
-      return new IdentToken(buf.toString());
+      return new IdentToken(new String(ident));
     }
 
     // Illegal character
