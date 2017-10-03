@@ -124,21 +124,95 @@ class Scanner {
     	char temp = ch;
     	int sign = -1;
     	try {
-    	ch = (char)in.read();
+    	bite = in.read();
     	}
     	catch(IOException e) {
     		e.printStackTrace();
     		return null;
+    	}
+    	if(bite == -1) {
+    		return new IdentToken(String.valueOf(temp));
+    	}
+    	else {
+    		ch = (char)bite;
     	}
     	if(ch >= '0' && ch <= '9') {
     		int i = lexInt(ch)*sign;
     		return new IntToken(i);
     	}
     	// this is actually the - identifier
-    	else if(String.valueOf(ch).matches("\\s")) {
+    	else if(String.valueOf(ch).matches("\\s") || (int)ch == -1) {
     		return new IdentToken(String.valueOf(temp));
     	}
+    	// dont be intimidated
+    	else if((ch >= 'A' && ch <= 'Z') 
+    			|| (ch >= 'a' && ch <='z')
+    			|| ch == '!'
+    			|| ch == '$'
+    			|| ch == '%'
+    			|| ch == '&'
+    			|| ch == '*'
+    			|| ch == '+'
+    			|| ch == '-'
+    			|| ch == '.'
+    			|| ch == '/'
+    			|| ch == ':'
+    			|| ch == '<'
+    			|| ch == '='
+    			|| ch == '>'
+    			|| ch == '?'
+    			|| ch == '@'
+    			|| ch == '^'
+    			|| ch == '_'
+    			|| ch == '~') {
+    		int length = 0;
+        	while((ch >= 'A' && ch <= 'Z') 
+        			|| (ch >= 'a' && ch <='z') 
+        			|| (ch >= '0' && ch <='9')
+        			|| ch == '!'
+        			|| ch == '$'
+        			|| ch == '%'
+        			|| ch == '&'
+        			|| ch == '*'
+        			|| ch == '+'
+        			|| ch == '-'
+        			|| ch == '.'
+        			|| ch == '/'
+        			|| ch == ':'
+        			|| ch == '<'
+        			|| ch == '='
+        			|| ch == '>'
+        			|| ch == '?'
+        			|| ch == '@'
+        			|| ch == '^'
+        			|| ch == '_'
+        			|| ch == '~') {
+        		buf[length] = (byte)ch;
+        		length++;
+        		try {
+        			ch = (char)in.read();
+        		}
+        		catch(IOException e) {
+        			e.getMessage();
+        			e.printStackTrace();
+        		}
+        	}
+        	try {
+        	in.unread((byte)ch);}
+        	catch(IOException e) {
+        		e.printStackTrace();
+        	}
+        	char[] ident = new char[buf.length];
+        	for(int i = 0; i < length; i++) {
+        		ident[i] = (char)buf[i];
+        	}
+
+          // put the character after the identifier back into the input
+          // in->putback(ch);
+          return new IdentToken(new String(ident));
+    	}
     	else {
+    		System.out.println((int)ch == -1);
     		// Not sure if we should handle the case of the '-' char followed by a non-integer char in such a way way...
     		// guess we'll find out later.
     		System.err.println("Illegal character '" + ch + "' following -");
@@ -153,6 +227,9 @@ class Scanner {
 //    		return new StrToken("-");
     	}
     }
+    else if (ch == '+') {
+    	return new IdentToken(String.valueOf('+'));
+    }
     // Positive Integer constants
     else if (ch >= '0' && ch <= '9') {
     	int i = lexInt(ch);
@@ -161,12 +238,51 @@ class Scanner {
 		
 
     // Identifiers
-    else if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <='z'))
+    else if ((ch >= 'A' && ch <= 'Z') 
+    		|| (ch >= 'a' && ch <='z')
+    		|| ch == '!'
+			|| ch == '$'
+			|| ch == '%'
+			|| ch == '&'
+			|| ch == '*'
+			|| ch == '+'
+			|| ch == '-'
+			|| ch == '.'
+			|| ch == '/'
+			|| ch == ':'
+			|| ch == '<'
+			|| ch == '='
+			|| ch == '>'
+			|| ch == '?'
+			|| ch == '@'
+			|| ch == '^'
+			|| ch == '_'
+			|| ch == '~')
 	     /* or ch is some other valid first character for an identifier */ {
       // TODO: scan an identifier into the buffer
     	//for now just allowing a sequence of alphanumerical characters starting with an alphabetical character
     	int length = 0;
-    	while((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <='z') || (ch >= '0' && ch <='9')) {
+    	while((ch >= 'A' && ch <= 'Z') 
+    			|| (ch >= 'a' && ch <='z') 
+    			|| (ch >= '0' && ch <='9')
+    			|| ch == '!'
+    			|| ch == '$'
+    			|| ch == '%'
+    			|| ch == '&'
+    			|| ch == '*'
+    			|| ch == '+'
+    			|| ch == '-'
+    			|| ch == '.'
+    			|| ch == '/'
+    			|| ch == ':'
+    			|| ch == '<'
+    			|| ch == '='
+    			|| ch == '>'
+    			|| ch == '?'
+    			|| ch == '@'
+    			|| ch == '^'
+    			|| ch == '_'
+    			|| ch == '~') {
     		buf[length] = (byte)ch;
     		length++;
     		try {

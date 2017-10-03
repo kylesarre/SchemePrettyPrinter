@@ -32,7 +32,11 @@
 // the parser returns a NULL tree.  In case of a parse error, the
 // parser discards the offending token (which probably was a DOT
 // or an RPAREN) and attempts to continue parsing with the next token.
-
+// ((()))
+// 
+//
+//
+//
 class Parser {
   private Scanner scanner;
 
@@ -40,13 +44,30 @@ class Parser {
   
   public Node parseExp() {
     // TODO: write code for parsing an exp
-    return null;
+	Token curToken;
+	try {
+	curToken = scanner.getNextToken();
+	System.out.println(curToken);}
+	catch(Exception e) {
+		curToken = null;
+	}
+	if (curToken == null) {
+		return null;
+	}
+	else if(curToken.getType() == Token.LPAREN) {
+		return new Cons(parseExp(), parseRest());
+	}
+	else if(curToken.getType() == Token.RPAREN) {
+		return new Nil();
+	}
+	else {
+		return null;
+	}    
   }
   
   protected Node parseRest() {
     // TODO: write code for parsing rest
     return null;
   }
-  
   // TODO: Add any additional methods you might need.
 };
