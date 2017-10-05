@@ -8,7 +8,7 @@ class Node {
   // The first argument of print(int, boolean) is the number of characters
   // to indent.  It is interpreted the same as for print(int).
   // The second argument is only useful for lists (nodes of classes
-  // Cons or Nil).  For all other subclasses of Node, the booleanean
+  // Cons or Nil). For all other subclasses of Node, the booleanean
   // argument is ignored.  Therefore, print(n,p) defaults to print(n)
   // for all classes other than Cons and Nil.
   // For classes Cons and Nil, print(n,TRUE) means that the open
@@ -37,7 +37,7 @@ class Node {
   public boolean isPair()   { return false; }  // Cons
 
   // TODO: Report an error in these default methods and implement them
-  // in class Cons.  After setCar, a Cons cell needs to be `parsed' again
+  // in class Cons.  After setCar, a Cons cell needs to be 'parsed' again
   // using parseList.
   public Node getCar() {
     return null;

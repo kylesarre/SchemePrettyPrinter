@@ -1,1 +1,0 @@
-'(123 . -453 (#t #f (a b c apples banannas . carrots) "hello world!")) (- a b))a + -

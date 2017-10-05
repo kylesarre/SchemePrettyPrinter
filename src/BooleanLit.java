@@ -5,6 +5,10 @@ class BooleanLit extends Node {
   public BooleanLit(boolean b) {
     booleanVal = b;
   }
+  
+  public boolean getBooleanVal() {
+	  return booleanVal;
+  }
 
   public void print(int n) {
     // There got to be a more efficient way to print n spaces.

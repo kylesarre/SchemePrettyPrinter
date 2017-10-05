@@ -10,4 +10,8 @@ class IntLit extends Node {
 
     System.out.println(intVal);
   }
+  
+  public int getIntVal() {
+	  return intVal;
+  }
 }

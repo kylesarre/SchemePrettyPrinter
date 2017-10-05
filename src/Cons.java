@@ -11,21 +11,49 @@ class Cons extends Node {
     // parseList only look at the car for selecting the appropriate
     // object from the Special hierarchy and to leave the rest of
     // parsing up to the interpreter.
-    void parseList() { }
+    void parseList(Node car) {
+    	if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("begin")) {
+    		form = new Begin();
+    	}
+    	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("cond")) {
+    		form = new Cond();
+    	}
+    	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("if")) {
+    		form = new If();
+    	}
+    	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("Lambda")) {
+    		form = new Lambda();
+    	}
+    	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("Let")) {
+    		form = new Let();
+    	}
+    	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("quote")) {
+    		form = new Quote();
+    	}
+    	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("set")) {
+    		form = new Set();
+    	}
+    	else {
+    		form = new Regular();
+    	}
+    }
     // TODO: Add any helper functions for parseList as appropriate.
+    public boolean isPair() {
+    	return true;
+    }
 
     public Cons(Node a, Node d) {
 	car = a;
 	cdr = d;
-	parseList();
+	parseList(car);
     }
 
     void print(int n) {
-	form.print(this, n, false);
+    	form.print(this, n, false);
     }
 
     void print(int n, boolean p) {
-	form.print(this, n, p);
+    	form.print(this, n, p);
     }
 
 }

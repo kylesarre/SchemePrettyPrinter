@@ -39,6 +39,24 @@ public class Main {
 			e.printStackTrace();
 		}
     }
+    else if(argv.length == 1 && argv[0] != null) {
+    	// test file is specified
+    	File f = new File(argv[0]);
+    	FileInputStream fs = null;
+    	FileInputStream fs2 = null;
+    	try {
+			fs = new FileInputStream(f);
+			fs2 = new FileInputStream(f);
+			testScanner = new Scanner(fs);
+			realScanner = new Scanner(fs2);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Failed to load file from command line. Opening scanner with System.in stream.");
+			testScanner = new Scanner(System.in);
+			realScanner = new Scanner(System.in);
+			e.printStackTrace();
+		}
+    }
     else {
     	// no test file was specified
     	testScanner = new Scanner(System.in);
@@ -82,14 +100,15 @@ public class Main {
 			e.printStackTrace();
 			tok = null;
 		}
-	    }
-	}
-	
+	  }
+	}	
 	// Create parser
 	Parser parser = new Parser(realScanner);
 	Node root;
 	
 	// Parse and pretty-print each input expression
+	// loop should only run twice, once to generate the full tree for recursive printing, and the second time to
+	// retrieve EOF info, since at that point, the scanner must return EOF data since there shouldn't be any more data left to parse.
 	root = parser.parseExp();
 	while (root != null) {
 	    root.print(0);

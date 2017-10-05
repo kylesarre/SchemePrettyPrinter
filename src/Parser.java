@@ -14,7 +14,10 @@
 //         |  string_constant
 //         |  identifier
 //    rest -> )
-//         |  exp+ [. exp] )
+//         |  exp R
+//
+//	  R -> rest
+//		-> . exp )
 //
 // and builds a parse tree.  Lists of the form (rest) are further
 // `parsed' into regular lists and special forms in the constructor
@@ -28,46 +31,122 @@
 // it can be reread by parseExp() or an alternative version of
 // parseExp() must be called.
 //
-// If EOF is reached (i.e., if the scanner returns a NULL) token,
+// If EOF is reached (i.e., if the scanner returns a NULL token,
 // the parser returns a NULL tree.  In case of a parse error, the
 // parser discards the offending token (which probably was a DOT
 // or an RPAREN) and attempts to continue parsing with the next token.
-// ((()))
 // 
 //
 //
 //
 class Parser {
   private Scanner scanner;
+  
+  // constant objects for our pretty printer
+  private Nil nil = new Nil();
+  private BooleanLit TRUE = new BooleanLit(true);
+  private BooleanLit FALSE = new BooleanLit(false);
 
   public Parser(Scanner s) { scanner = s; }
   
   public Node parseExp() {
+	  Token curToken;
+		try {
+		curToken = scanner.getNextToken();
+		}
+		catch(Exception e) {
+			curToken = null;
+			System.err.println("Failure.");
+		}
+		return parseExp(curToken);
+  }
+  
+  public Node parseExp(Token curToken) {
     // TODO: write code for parsing an exp
-	Token curToken;
-	try {
-	curToken = scanner.getNextToken();
-	System.out.println(curToken);}
-	catch(Exception e) {
-		curToken = null;
-	}
-	if (curToken == null) {
+	if(curToken == null) {
 		return null;
 	}
 	else if(curToken.getType() == Token.LPAREN) {
+		System.out.println("CONS");
 		return new Cons(parseExp(), parseRest());
+	}
+	else if(curToken.getType() == Token.QUOTE) {
+		return new Cons(new Ident("quote"), parseExp());
 	}
 	else if(curToken.getType() == Token.RPAREN) {
 		return new Nil();
+	}	
+	else if(curToken.getType() == Token.TRUE) {
+		return TRUE; // the constant bool object for true
+	}
+	else if(curToken.getType() == Token.FALSE) {
+		return FALSE; // the constant bool object for false
+	}
+	else if(curToken.getType() == Token.INT) {
+		return new IntLit(curToken.getIntVal());
+	}
+	else if(curToken.getType() == Token.STRING) {
+		return new StrLit(((StrToken)curToken).getName());
+	}
+	else if(curToken.getType() == Token.IDENT) {
+		System.out.println(curToken.getName());
+		return new Ident(((IdentToken)curToken).getName());
 	}
 	else {
-		return null;
-	}    
+			System.err.println("Parser error under parseExp(). unexpected token type: " + curToken.getType());
+			System.err.println("Ignoring token.");
+			return parseExp();
+	}		   
   }
   
   protected Node parseRest() {
+	  Token curToken;
+		// grab the next token to see what the "rest" is.
+		try {
+			curToken = scanner.getNextToken();}
+			catch(Exception e) {
+				curToken = null;
+			}
+		return parseRest(curToken);
+  }
+  
+  protected Node parseRest(Token curToken) {
     // TODO: write code for parsing rest
-    return null;
+	if(curToken == null) {
+		return null;
+	}
+	else if(curToken.getType() == Token.RPAREN) {
+		System.out.println("NIL!");
+		return new Nil();
+	}
+	else {
+		//return new Cons(parseExp(curToken), parseFinal());
+		return parseFinal(parseExp(curToken));
+	}	
+  }
+  
+  protected Node parseFinal(Node exp) {
+	  Token curToken;
+	  try {
+			curToken = scanner.getNextToken();}
+			catch(Exception e) {
+				curToken = null;
+			}
+	  return parseFinal(exp, curToken);
+  }
+  
+  protected Node parseFinal(Node exp, Token curToken) {
+	  if(curToken == null) {
+		  return null;
+	  }
+	  else if(curToken.getType() == TokenType.DOT ) {
+		  System.out.println("DOT");
+		  return new Cons(exp, parseExp());
+	  }
+	  else {
+		  System.out.println("CONS");
+		  return new Cons(exp, parseRest(curToken));
+	  }
   }
   // TODO: Add any additional methods you might need.
 };
