@@ -208,23 +208,12 @@ class Scanner {
         	}
 
           // put the character after the identifier back into the input
-          // in->putback(ch);
-          return new IdentToken(new String(ident));
+          // in->putback(ch);         
+          return new IdentToken(new String(ident).trim());
     	}
     	else {
-    		System.out.println((int)ch == -1);
-    		// Not sure if we should handle the case of the '-' char followed by a non-integer char in such a way way...
-    		// guess we'll find out later.
     		System.err.println("Illegal character '" + ch + "' following -");
       	  	return getNextToken();
-//    		try {
-//    		in.unread(ch);
-//    		}
-//    		catch(Exception e) {
-//    			e.printStackTrace();
-//    			return null;
-//    		}
-//    		return new StrToken("-");
     	}
     }
     else if (ch == '+') {
@@ -305,7 +294,7 @@ class Scanner {
 
       // put the character after the identifier back into the input
       // in->putback(ch);
-      return new IdentToken(new String(ident));
+      return new IdentToken(new String(ident).trim());
     }
 
     // Illegal character
@@ -332,8 +321,7 @@ class Scanner {
 			buf[counter] = (byte)i;
 			counter++;
 			numDigits++;
-			//System.out.println("digits: " + numDigits);
-			
+
 			try {
 			ch = (char)in.read();}
 			catch(IOException e) {
@@ -344,7 +332,6 @@ class Scanner {
 			// test for if we should try reading the next char from the scanner or if we should quit and putback the current char
 			if(ch >= '0' && ch <= '9'){
 				i = ch - '0';
-				System.out.println(i);
 			}
 			else{
 			//put the current char back into the input stream

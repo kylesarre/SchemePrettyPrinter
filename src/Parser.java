@@ -50,31 +50,35 @@ class Parser {
   public Parser(Scanner s) { scanner = s; }
   
   public Node parseExp() {
+	  //System.err.println("Calling parseExp(), forwarding");
 	  Token curToken;
 		try {
 		curToken = scanner.getNextToken();
 		}
 		catch(Exception e) {
 			curToken = null;
-			System.err.println("Failure.");
+			//System.err.println("Failure.");
 		}
 		return parseExp(curToken);
   }
   
   public Node parseExp(Token curToken) {
+	//System.err.println("Calling parseExp(), no forwarding");
     // TODO: write code for parsing an exp
+
 	if(curToken == null) {
 		return null;
 	}
 	else if(curToken.getType() == Token.LPAREN) {
-		System.out.println("CONS");
-		return new Cons(parseExp(), parseRest());
+		return parseRest();			 
 	}
 	else if(curToken.getType() == Token.QUOTE) {
+		//System.err.println("QUOTE");
 		return new Cons(new Ident("quote"), parseExp());
 	}
 	else if(curToken.getType() == Token.RPAREN) {
-		return new Nil();
+		//System.err.println("NIL!");
+		return nil;
 	}	
 	else if(curToken.getType() == Token.TRUE) {
 		return TRUE; // the constant bool object for true
@@ -86,20 +90,21 @@ class Parser {
 		return new IntLit(curToken.getIntVal());
 	}
 	else if(curToken.getType() == Token.STRING) {
-		return new StrLit(((StrToken)curToken).getName());
+		return new StrLit(((StrToken)curToken).getStrVal());
 	}
 	else if(curToken.getType() == Token.IDENT) {
-		System.out.println(curToken.getName());
+		//System.err.println(curToken.getName());
 		return new Ident(((IdentToken)curToken).getName());
 	}
 	else {
-			System.err.println("Parser error under parseExp(). unexpected token type: " + curToken.getType());
-			System.err.println("Ignoring token.");
+			//System.err.println("Parser error under parseExp(). unexpected token type: " + curToken.getType());
+			//System.err.println("Ignoring token.");
 			return parseExp();
-	}		   
+	}
   }
   
   protected Node parseRest() {
+	  //System.err.println("Calling parseRest(), forwarding");
 	  Token curToken;
 		// grab the next token to see what the "rest" is.
 		try {
@@ -112,12 +117,21 @@ class Parser {
   
   protected Node parseRest(Token curToken) {
     // TODO: write code for parsing rest
+	 //System.err.println("Calling parseRest(), no forwarding");
 	if(curToken == null) {
 		return null;
 	}
 	else if(curToken.getType() == Token.RPAREN) {
-		System.out.println("NIL!");
-		return new Nil();
+		//System.err.println("NIL!");
+		return nil;
+	}
+	else if(curToken.getType() == Token.LPAREN) {
+		//System.err.println("CONS");
+		return new Cons(parseExp(curToken),parseRest());
+	}
+	else if(curToken.getType() == Token.DOT) {
+		//System.out.println("Returning null!");
+		return null;
 	}
 	else {
 		//return new Cons(parseExp(curToken), parseFinal());
@@ -126,6 +140,7 @@ class Parser {
   }
   
   protected Node parseFinal(Node exp) {
+	  //System.err.println("Calling parseFinal(), forwarding");
 	  Token curToken;
 	  try {
 			curToken = scanner.getNextToken();}
@@ -136,15 +151,19 @@ class Parser {
   }
   
   protected Node parseFinal(Node exp, Token curToken) {
+	  //System.err.println("Calling parseFinal(), no forwarding");
 	  if(curToken == null) {
 		  return null;
 	  }
 	  else if(curToken.getType() == TokenType.DOT ) {
-		  System.out.println("DOT");
+		  //System.err.println("DOT");
 		  return new Cons(exp, parseExp());
 	  }
+	  else if(curToken.getType() == TokenType.RPAREN) {
+		  return new Cons(exp, parseRest(curToken));
+	  }
 	  else {
-		  System.out.println("CONS");
+		  //System.err.println("CONS");
 		  return new Cons(exp, parseRest(curToken));
 	  }
   }

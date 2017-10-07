@@ -21,10 +21,10 @@ class Cons extends Node {
     	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("if")) {
     		form = new If();
     	}
-    	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("Lambda")) {
+    	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("lambda")) {
     		form = new Lambda();
     	}
-    	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("Let")) {
+    	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("let")) {
     		form = new Let();
     	}
     	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("quote")) {
@@ -32,6 +32,9 @@ class Cons extends Node {
     	}
     	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("set")) {
     		form = new Set();
+    	}
+    	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("define")) {
+    		form = new Define();
     	}
     	else {
     		form = new Regular();
@@ -46,6 +49,14 @@ class Cons extends Node {
 	car = a;
 	cdr = d;
 	parseList(car);
+    }
+    
+    public Node getCar() {
+    	return car;
+    }
+    
+    public Node getCdr() {
+    	return cdr;
     }
 
     void print(int n) {

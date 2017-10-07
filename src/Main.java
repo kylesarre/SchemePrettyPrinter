@@ -101,7 +101,7 @@ public class Main {
 			tok = null;
 		}
 	  }
-	}	
+	}
 	// Create parser
 	Parser parser = new Parser(realScanner);
 	Node root;
@@ -111,7 +111,16 @@ public class Main {
 	// retrieve EOF info, since at that point, the scanner must return EOF data since there shouldn't be any more data left to parse.
 	root = parser.parseExp();
 	while (root != null) {
-	    root.print(0);
+		if(root.isNull()) {
+			// parser for some inputs will not catch trailing Nil nodes the first pass around.
+			// Grammar implementation probably has some bugs.
+			// Temporary fix: we make sure to print ')' if any Nil nodes remain unparsed at the end.
+			System.out.print(')');
+		}
+		else {
+			root.print(0);
+		}
+	    
 	    root = parser.parseExp();
 	}
 	System.exit(0);

@@ -8,9 +8,13 @@ class Nil extends Node {
       System.out.print(" ");
     
     if (p) {
-      System.out.println(")");
+      System.out.print(")");
     } else {
-      System.out.println("()");
+      System.out.print("()");
     }
+  }
+  
+  public boolean isNull() {
+	  return true;
   }
 }

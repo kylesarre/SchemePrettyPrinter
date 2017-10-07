@@ -1,1 +1,1 @@
-(a b c)
+("Hello" "World!" (apple bannana (orange "grape") #t) 124345)
