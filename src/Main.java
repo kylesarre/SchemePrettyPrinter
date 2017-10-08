@@ -17,52 +17,54 @@ public class Main {
     };
 
     public static void main (String argv[]) {
-    	
-    Scanner testScanner;
-    Scanner realScanner;
-	// create scanner that reads from standard input
-    if(argv.length == 2 && argv[1] != null) {
-    	// test file is specified
-    	File f = new File(argv[1]);
-    	FileInputStream fs = null;
-    	FileInputStream fs2 = null;
-    	try {
-			fs = new FileInputStream(f);
-			fs2 = new FileInputStream(f);
-			testScanner = new Scanner(fs);
-			realScanner = new Scanner(fs2);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Failed to load file from command line. Opening scanner with System.in stream.");
-			testScanner = new Scanner(System.in);
-			realScanner = new Scanner(System.in);
-			e.printStackTrace();
-		}
-    }
-    else if(argv.length == 1 && argv[0] != null) {
-    	// test file is specified
-    	File f = new File(argv[0]);
-    	FileInputStream fs = null;
-    	FileInputStream fs2 = null;
-    	try {
-			fs = new FileInputStream(f);
-			fs2 = new FileInputStream(f);
-			testScanner = new Scanner(fs);
-			realScanner = new Scanner(fs2);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Failed to load file from command line. Opening scanner with System.in stream.");
-			testScanner = new Scanner(System.in);
-			realScanner = new Scanner(System.in);
-			e.printStackTrace();
-		}
-    }
-    else {
-    	// no test file was specified
-    	testScanner = new Scanner(System.in);
-    	realScanner = new Scanner(System.in);
-    }
 
+// personalized test case setup. commented out for use on the classes server.
+//    Scanner testScanner;
+//    Scanner realScanner;
+//	// create scanner that reads from standard input
+//    if(argv.length == 2 && argv[1] != null) {
+//    	// test file is specified
+//    	File f = new File(argv[1]);
+//    	FileInputStream fs = null;
+//    	FileInputStream fs2 = null;
+//    	try {
+//			fs = new FileInputStream(f);
+//			fs2 = new FileInputStream(f);
+//			testScanner = new Scanner(fs);
+//			realScanner = new Scanner(fs2);
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			System.out.println("Failed to load file from command line. Opening scanner with System.in stream.");
+//			testScanner = new Scanner(System.in);
+//			realScanner = new Scanner(System.in);
+//			e.printStackTrace();
+//		}
+//    }
+//    else if(argv.length == 1 && argv[0] != null) {
+//    	// test file is specified
+//    	File f = new File(argv[0]);
+//    	FileInputStream fs = null;
+//    	FileInputStream fs2 = null;
+//    	try {
+//			fs = new FileInputStream(f);
+//			fs2 = new FileInputStream(f);
+//			testScanner = new Scanner(fs);
+//			realScanner = new Scanner(fs2);
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			System.out.println("Failed to load file from command line. Opening scanner with System.in stream.");
+//			testScanner = new Scanner(System.in);
+//			realScanner = new Scanner(System.in);
+//			e.printStackTrace();
+//		}
+//    }
+//    else {
+//    	// no test file was specified
+//    	testScanner = new Scanner(System.in);
+//    	realScanner = new Scanner(System.in);
+//    }
+    Scanner sc = new Scanner(System.in);
+    
 	if (argv.length > 2) {
 	    System.err.println("Usage: java Main " + "[-d]");
 	    System.exit(1);
@@ -74,7 +76,7 @@ public class Main {
 	    // debug scanner
 		Token tok = null;
 		try {
-			tok = testScanner.getNextToken();
+			tok = sc.getNextToken();
 		}
 		catch(Exception e) {
 			e.getMessage();
@@ -93,7 +95,7 @@ public class Main {
 		    System.out.println();
 
 		try {
-			tok = testScanner.getNextToken();
+			tok = sc.getNextToken();
 		}
 		catch(Exception e) {
 			e.getMessage();
@@ -103,7 +105,7 @@ public class Main {
 	  }
 	}
 	// Create parser
-	Parser parser = new Parser(realScanner);
+	Parser parser = new Parser(sc);
 	Node root;
 	
 	// Parse and pretty-print each input expression
