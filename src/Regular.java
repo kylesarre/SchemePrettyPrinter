@@ -1,5 +1,8 @@
 import java.io.*;
 
+// There will be a bug where if specials like define make a call to regular and regular makes a call to a special like define,
+// that define won't be indented correctly. I haven't found a clean way to feed the original define's indentation down the recursion stack
+// without breaking what currently works.
 class Regular extends Special {
  
     // TODO: Add any fields needed.
@@ -28,20 +31,40 @@ class Regular extends Special {
 	}
 
     void print(Node t, int n, boolean p) {
-    	if(t.isPair()) {    		
+    	//System.out.print("Reg!");   	
+    	if(t.isPair()) {
+    		boolean signFlag = false;
+    		int temp;
+    		if(n > 1) {
+    			temp = n;
+    			n = 0;
+    		}
+    		else if(n < 0) {
+    			signFlag = true;
+    			temp = -1*n;   			
+    			n = 1;
+    		}
+    		else {
+    			temp = n;
+    		}
     		if(!p) {
     			if(n == 1) {
-    				System.out.print(" ");
-    				n = 0;
-    			}
+        			System.out.print(" ");
+        		}
     			System.out.print('(');
     		}
     		boolean isDotCons = detectDot(t);
 			Node car = ((Cons)t).getCar();
 			Node cdr = ((Cons)t).getCdr();
 			
-			if(car.isPair()) {					
-				car.print(n, false);	
+			if(car.isPair()) {	
+				if(signFlag) {
+					car.print(1, false);
+				}
+				else {
+					car.print(1, false);
+				}
+					
 			}
 			else if(car.isSymbol()) {
 				car.print(n);
@@ -74,8 +97,26 @@ class Regular extends Special {
 					((Nil)cdr).print(newN, true);
 				}
 				else if(cdr.isPair()) {
-					int newN = 1;
-					cdr.print(newN, true);
+					if(cdr.getCar().isPair()) {
+						int newN = 1;
+						System.out.print(" (");
+						cdr.getCar().getCar().print(0);
+						cdr.getCar().getCdr().print(newN, true);
+						if(cdr.getCdr().isPair()) {
+							cdr.getCdr().print(newN, true);
+						}
+						else if(cdr.getCdr().isNull()){
+							((Nil)cdr.getCdr()).print(0, true);;
+						}
+						else {
+							cdr.getCdr().print(newN);
+							System.out.print(")");
+						}
+					}
+					else {
+						int newN = 1;
+						cdr.print(newN, true);
+					}					
 				}
 				else {
 					cdr.print(n);

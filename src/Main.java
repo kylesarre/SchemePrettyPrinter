@@ -118,10 +118,13 @@ public class Main {
 			System.out.print(')');
 		}
 		else {
-			root.print(0);
+			root.print(0);		
 		}
 	    
 	    root = parser.parseExp();
+	    if(root != null) {
+	    	System.out.print("\n");
+	    }
 	}
 	System.exit(0);
     }

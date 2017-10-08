@@ -5,7 +5,6 @@ class Ident extends Node {
   public Ident(String n) { name = n; }
 
   public void print(int n) {
-	  System.out.flush();
     for (int i = 0; i < n; i++) {
       System.out.print(" ");
       }

@@ -1,1 +1,1 @@
-("Hello" "World!" (apple bannana (orange "grape") #t) 124345)
+(begin (set! x 6) (set! y 7) (*x y))

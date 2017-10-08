@@ -30,7 +30,7 @@ class Cons extends Node {
     	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("quote")) {
     		form = new Quote();
     	}
-    	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("set")) {
+    	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("set!")) {
     		form = new Set();
     	}
     	else if(car.isSymbol() && ((Ident)car).getName().toLowerCase().equals("define")) {

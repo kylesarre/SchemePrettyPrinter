@@ -11,4 +11,5 @@ interface TokenType {
     public static final int INT = 6;			// integer constant
     public static final int STRING = 7;			// string constant
     public static final int IDENT = 8;			// identifier
+    public static final int SET = 9;
 }
